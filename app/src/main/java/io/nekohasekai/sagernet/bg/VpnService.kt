@@ -102,10 +102,10 @@ class VpnService : BaseVpnService(),
 
         // address
         builder.addAddress(PRIVATE_VLAN4_CLIENT, 30)
-        if (ipv6Mode != IPv6Mode.DISABLE) {
+        // if (ipv6Mode != IPv6Mode.DISABLE) {
             builder.addAddress(PRIVATE_VLAN6_CLIENT, 126)
-        }
-        builder.addDnsServer(PRIVATE_VLAN4_ROUTER)
+        // }
+        // builder.addDnsServer(PRIVATE_VLAN4_ROUTER)
 
         // route
         if (DataStore.bypassLan) {
@@ -113,18 +113,23 @@ class VpnService : BaseVpnService(),
                 val subnet = Subnet.fromString(it)!!
                 builder.addRoute(subnet.address.hostAddress!!, subnet.prefixSize)
             }
-            builder.addRoute(PRIVATE_VLAN4_ROUTER, 32)
+            // builder.addRoute(PRIVATE_VLAN4_ROUTER, 32)
             builder.addRoute(FAKEDNS_VLAN4_CLIENT, 15)
             // https://issuetracker.google.com/issues/149636790
             if (ipv6Mode != IPv6Mode.DISABLE) {
                 builder.addRoute("2000::", 3)
             }
         } else {
-            builder.addRoute("0.0.0.0", 0)
+             //  builder.addRoute("0.0.0.0", 0)
             if (ipv6Mode != IPv6Mode.DISABLE) {
-                builder.addRoute("::", 0)
+                // builder.addRoute("::", 0)
             }
         }
+
+	builder.addRoute("64:ff9b::", 96)
+	builder.addRoute("2000::", 126)
+	builder.addRoute("2001:4860:4860::", 48)
+	builder.addDnsServer("64:ff9b::127.9.9.9")
 
         updateUnderlyingNetwork(builder)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) builder.setMetered(metered)
